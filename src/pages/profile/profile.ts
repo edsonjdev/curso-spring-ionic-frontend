@@ -33,7 +33,14 @@ export class ProfilePage {
           //buscar a imagem do s3
           this.getImageIfExiste();
         },
-        error => {})
+        error => {
+          if (error.status == 403) {
+            this.navCtrl.setRoot("HomePage");
+          }
+        });
+    }
+    else {
+      this.navCtrl.setRoot("HomePage");
     }
   }
 
