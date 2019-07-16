@@ -35,6 +35,10 @@ export class ErrorInterceptor implements HttpInterceptor {
             this.handler403();
             break;
 
+          case 422:
+            this.handler422(errorObj);
+            break;
+
             default:
               this.handleDefaultError(errorObj);
         }
@@ -61,6 +65,20 @@ export class ErrorInterceptor implements HttpInterceptor {
     alert.present();
   }
 
+  handler422(errorObj) {
+    let alert = this.alertController.create({
+      title: 'Erro 422: Validacao',
+      message: this.listErrors(errorObj.errors),
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Ok'
+        }
+      ]
+    });
+    alert.present();
+  }
+
   handleDefaultError(errorObj) {
     let alert = this.alertController.create({
       title: 'Erro ' + errorObj.status + ': ' + errorObj.error,
@@ -74,7 +92,13 @@ export class ErrorInterceptor implements HttpInterceptor {
     });
     alert.present();
   }
-
+  private listErrors(messages : FieldMessage[]) : string {
+    let s : string = '';
+    for (var i=0; i<messages.length; i++) {
+      s = s + '<p><strong>' + messages[i].fieldName + "</strong>: " + messages[i].message + '</p>';
+    }
+    return s;
+  }
 }
 
 export const ErrorInterceptorProvider = {
